@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:replace="~{fragments/layout :: head(${titre})}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: header('depistages')}"></nav>
+<main class="container" style="max-width:760px">
+  <h1 class="h3 mb-3" th:text="${titre}">Dépistage</h1>
+  <p class="text-muted small">Seuls les sites des campagnes en cours, les types qu’elles proposent et les agents actifs sont listés.</p>
+  <form method="post" th:action="@{/depistages}" th:object="${depistageForm}" novalidate>
+    <div class="alert alert-danger" th:if="${#fields.hasGlobalErrors()}"><div th:each="e : ${#fields.globalErrors()}" th:text="${e}"></div></div>
+    <div class="row">
+      <div class="col-md-6 mb-3"><label class="form-label" for="participantId">Participant</label>
+        <select id="participantId" class="form-select" th:field="*{participantId}" th:errorclass="is-invalid">
+          <option value="">-- Choisir --</option>
+          <option th:each="o : ${participants}" th:value="${o.id}" th:text="${o.label}"></option>
+        </select><div class="invalid-feedback" th:errors="*{participantId}"></div></div>
+      <div class="col-md-6 mb-3"><label class="form-label" for="agentId">Agent</label>
+        <select id="agentId" class="form-select" th:field="*{agentId}" th:errorclass="is-invalid">
+          <option value="">-- Choisir --</option>
+          <option th:each="o : ${agents}" th:value="${o.id}" th:text="${o.label}"></option>
+        </select><div class="invalid-feedback" th:errors="*{agentId}"></div></div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 mb-3"><label class="form-label" for="siteId">Site</label>
+        <select id="siteId" class="form-select" th:field="*{siteId}" th:errorclass="is-invalid">
+          <option value="">-- Choisir --</option>
+          <option th:each="o : ${sites}" th:value="${o.id}" th:text="${o.label}"></option>
+        </select><div class="invalid-feedback" th:errors="*{siteId}"></div></div>
+      <div class="col-md-6 mb-3"><label class="form-label" for="typeId">Type d’examen</label>
+        <select id="typeId" class="form-select" th:field="*{typeId}" th:errorclass="is-invalid">
+          <option value="">-- Choisir --</option>
+          <option th:each="o : ${types}" th:value="${o.id}" th:text="${o.label}"></option>
+        </select><div class="invalid-feedback" th:errors="*{typeId}"></div></div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 mb-3"><label class="form-label" for="dateDepistage">Date</label>
+        <input id="dateDepistage" type="date" class="form-control" th:field="*{dateDepistage}" th:errorclass="is-invalid">
+        <div class="invalid-feedback" th:errors="*{dateDepistage}"></div></div>
+      <div class="col-md-4 mb-3"><label class="form-label" for="resultat">Résultat</label>
+        <select id="resultat" class="form-select" th:field="*{resultat}" th:errorclass="is-invalid">
+          <option value="">-- Choisir --</option>
+          <option th:each="r : ${resultats}" th:value="${r}" th:text="${r.libelle}"></option>
+        </select><div class="invalid-feedback" th:errors="*{resultat}"></div></div>
+      <div class="col-md-4 mb-3"><label class="form-label" for="valeurMesuree">Valeur mesurée</label>
+        <input id="valeurMesuree" class="form-control" th:field="*{valeurMesuree}" th:errorclass="is-invalid">
+        <div class="invalid-feedback" th:errors="*{valeurMesuree}"></div></div>
+    </div>
+    <div class="mb-3"><label class="form-label" for="orientation">Orientation (obligatoire si le résultat n’est pas négatif)</label>
+      <input id="orientation" class="form-control" th:field="*{orientation}" th:errorclass="is-invalid">
+      <div class="invalid-feedback" th:errors="*{orientation}"></div></div>
+    <div class="mb-3"><label class="form-label" for="observation">Observation</label>
+      <textarea id="observation" rows="2" class="form-control" th:field="*{observation}" th:errorclass="is-invalid"></textarea>
+      <div class="invalid-feedback" th:errors="*{observation}"></div></div>
+    <button class="btn btn-primary" type="submit">Enregistrer</button>
+    <a class="btn btn-link" th:href="@{/depistages}">Annuler</a>
+  </form>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

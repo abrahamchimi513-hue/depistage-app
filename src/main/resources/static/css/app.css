@@ -1,0 +1,5 @@
+body { background: #f6f8fa; }
+.stat-card .display-6 { font-weight: 600; }
+.progress { height: 1.25rem; }
+footer { color: #6c757d; font-size: .875rem; }
+.table td, .table th { vertical-align: middle; }

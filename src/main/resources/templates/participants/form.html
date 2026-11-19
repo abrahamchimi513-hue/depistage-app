@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:replace="~{fragments/layout :: head(${titre})}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: header('participants')}"></nav>
+<main class="container" style="max-width:720px">
+  <h1 class="h3 mb-3" th:text="${titre}">Participant</h1>
+  <form method="post" th:action="@{${action}}" th:object="${participantForm}" novalidate>
+    <div class="alert alert-danger" th:if="${#fields.hasGlobalErrors()}"><div th:each="e : ${#fields.globalErrors()}" th:text="${e}"></div></div>
+    <div class="row">
+      <div class="col-md-6 mb-3"><label class="form-label" for="nom">Nom</label>
+        <input id="nom" class="form-control" th:field="*{nom}" th:errorclass="is-invalid">
+        <div class="invalid-feedback" th:errors="*{nom}"></div></div>
+      <div class="col-md-6 mb-3"><label class="form-label" for="prenom">Prénom</label>
+        <input id="prenom" class="form-control" th:field="*{prenom}" th:errorclass="is-invalid">
+        <div class="invalid-feedback" th:errors="*{prenom}"></div></div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 mb-3"><label class="form-label" for="sexe">Sexe</label>
+        <select id="sexe" class="form-select" th:field="*{sexe}" th:errorclass="is-invalid">
+          <option value="">-- Choisir --</option>
+          <option th:each="s : ${sexes}" th:value="${s}" th:text="${s.libelle}"></option>
+        </select>
+        <div class="invalid-feedback" th:errors="*{sexe}"></div></div>
+      <div class="col-md-6 mb-3"><label class="form-label" for="dateNaissance">Date de naissance</label>
+        <input id="dateNaissance" type="date" class="form-control" th:field="*{dateNaissance}" th:errorclass="is-invalid">
+        <div class="invalid-feedback" th:errors="*{dateNaissance}"></div></div>
+    </div>
+    <div class="mb-3"><label class="form-label" for="telephone">Téléphone (facultatif)</label>
+      <input id="telephone" class="form-control" th:field="*{telephone}" th:errorclass="is-invalid">
+      <div class="invalid-feedback" th:errors="*{telephone}"></div></div>
+    <div class="mb-3"><label class="form-label" for="quartier">Quartier</label>
+      <input id="quartier" class="form-control" th:field="*{quartier}" th:errorclass="is-invalid">
+      <div class="invalid-feedback" th:errors="*{quartier}"></div></div>
+    <button class="btn btn-primary" type="submit">Enregistrer</button>
+    <a class="btn btn-link" th:href="@{/participants}">Annuler</a>
+  </form>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

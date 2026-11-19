@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:replace="~{fragments/layout :: head('Page introuvable')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: header('')}"></nav>
+<main class="container text-center py-5">
+  <h1 class="display-4">404</h1>
+  <p class="lead">Page ou ressource introuvable.</p>
+  <p class="text-muted" th:text="${message}">Cette adresse ne correspond à aucune ressource.</p>
+  <a class="btn btn-primary" th:href="@{/}">Retour au tableau de bord</a>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

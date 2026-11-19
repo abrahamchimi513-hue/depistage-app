@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:replace="~{fragments/layout :: head('Campagne')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: header('campagnes')}"></nav>
+<main class="container">
+  <div th:replace="~{fragments/layout :: messages}"></div>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0" th:text="${campagne.nom}">Campagne</h1>
+    <a class="btn btn-outline-primary" th:href="@{|/campagnes/${campagne.id}/modifier|}">Modifier</a>
+  </div>
+  <div class="row g-3 mb-4">
+    <div class="col-md-6"><div class="card h-100"><div class="card-body">
+      <p class="mb-1"><strong>Ville :</strong> <span th:text="${campagne.ville}"></span></p>
+      <p class="mb-1"><strong>Période :</strong> <span th:text="${#temporals.format(campagne.dateDebut, 'dd/MM/yyyy')}"></span> → <span th:text="${#temporals.format(campagne.dateFin, 'dd/MM/yyyy')}"></span></p>
+      <p class="mb-1"><strong>Statut :</strong> <span th:text="${campagne.statut.libelle}"></span></p>
+      <p class="mb-0"><strong>Types proposés :</strong> <span th:text="${#strings.listJoin(campagne.types, ', ')}"></span></p>
+    </div></div></div>
+    <div class="col-md-6"><div class="card h-100"><div class="card-body">
+      <p class="mb-1"><strong>Avancement :</strong> <span th:text="${stats.realises}">0</span> / <span th:text="${stats.objectif}">0</span></p>
+      <div class="progress mb-2" role="progressbar"><div class="progress-bar" th:style="|width: ${stats.avancement}%|" th:text="${stats.avancement} + ' %'"></div></div>
+      <p class="mb-0">Négatifs : <strong th:text="${stats.negatifs}">0</strong> · Positifs : <strong th:text="${stats.positifs}">0</strong>
+        · À confirmer : <strong th:text="${stats.aConfirmer}">0</strong> · Positivité : <strong th:text="${#numbers.formatDecimal(stats.tauxPositivite, 1, 1)}">0,0</strong> %</p>
+    </div></div></div>
+  </div>
+  <h2 class="h5">Sites de la campagne</h2>
+  <p class="text-muted" th:if="${#lists.isEmpty(sites)}">Aucun site rattaché.</p>
+  <ul class="list-group mb-3" th:unless="${#lists.isEmpty(sites)}">
+    <li class="list-group-item d-flex justify-content-between" th:each="s : ${sites}">
+      <span th:text="${s.nom} + ' — ' + ${s.quartier}">Site</span>
+      <span class="text-muted" th:text="${s.capaciteJournaliere} + ' / jour'"></span>
+    </li>
+  </ul>
+  <a th:href="@{/campagnes}">&laquo; Retour à la liste</a>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

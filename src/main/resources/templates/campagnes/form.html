@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:replace="~{fragments/layout :: head(${titre})}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: header('campagnes')}"></nav>
+<main class="container" style="max-width:720px">
+  <h1 class="h3 mb-3" th:text="${titre}">Campagne</h1>
+  <form method="post" th:action="@{${action}}" th:object="${campagneForm}" novalidate>
+    <div class="alert alert-danger" th:if="${#fields.hasGlobalErrors()}"><div th:each="e : ${#fields.globalErrors()}" th:text="${e}"></div></div>
+    <div class="mb-3"><label class="form-label" for="nom">Nom</label>
+      <input id="nom" class="form-control" th:field="*{nom}" th:errorclass="is-invalid">
+      <div class="invalid-feedback" th:errors="*{nom}"></div></div>
+    <div class="mb-3"><label class="form-label" for="ville">Ville</label>
+      <input id="ville" class="form-control" th:field="*{ville}" th:errorclass="is-invalid">
+      <div class="invalid-feedback" th:errors="*{ville}"></div></div>
+    <div class="row">
+      <div class="col-md-6 mb-3"><label class="form-label" for="dateDebut">Date de début</label>
+        <input id="dateDebut" type="date" class="form-control" th:field="*{dateDebut}" th:errorclass="is-invalid">
+        <div class="invalid-feedback" th:errors="*{dateDebut}"></div></div>
+      <div class="col-md-6 mb-3"><label class="form-label" for="dateFin">Date de fin</label>
+        <input id="dateFin" type="date" class="form-control" th:field="*{dateFin}" th:errorclass="is-invalid">
+        <div class="invalid-feedback" th:errors="*{dateFin}"></div></div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 mb-3"><label class="form-label" for="objectif">Objectif (participants)</label>
+        <input id="objectif" type="number" class="form-control" th:field="*{objectif}" th:errorclass="is-invalid">
+        <div class="invalid-feedback" th:errors="*{objectif}"></div></div>
+      <div class="col-md-6 mb-3"><label class="form-label" for="statut">Statut</label>
+        <select id="statut" class="form-select" th:field="*{statut}" th:errorclass="is-invalid">
+          <option value="">-- Choisir --</option>
+          <option th:each="s : ${statuts}" th:value="${s}" th:text="${s.libelle}"></option>
+        </select>
+        <div class="invalid-feedback" th:errors="*{statut}"></div></div>
+    </div>
+    <div class="mb-3"><label class="form-label d-block">Types de dépistage proposés</label>
+      <div class="form-check" th:each="t : ${types}">
+        <input class="form-check-input" type="checkbox" th:id="|type${t.id}|" th:field="*{typeIds}" th:value="${t.id}">
+        <label class="form-check-label" th:for="|type${t.id}|" th:text="${t.label}"></label>
+      </div>
+      <div class="text-danger small" th:errors="*{typeIds}"></div></div>
+    <button class="btn btn-primary" type="submit">Enregistrer</button>
+    <a class="btn btn-link" th:href="@{/campagnes}">Annuler</a>
+  </form>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

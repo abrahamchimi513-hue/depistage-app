@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:replace="~{fragments/layout :: head('Participants')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: header('participants')}"></nav>
+<main class="container">
+  <div th:replace="~{fragments/layout :: messages}"></div>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Participants</h1>
+    <a class="btn btn-primary" th:href="@{/participants/nouveau}">Nouveau participant</a>
+  </div>
+  <form method="get" th:action="@{/participants}" class="input-group mb-3">
+    <input type="text" name="q" th:value="${q}" class="form-control" placeholder="Rechercher par nom, prénom ou quartier">
+    <button class="btn btn-outline-secondary" type="submit">Rechercher</button>
+  </form>
+  <p class="text-muted" th:if="${page.empty}">Aucun participant ne correspond.</p>
+  <div class="table-responsive" th:unless="${page.empty}">
+    <table class="table table-striped">
+      <thead><tr><th>Nom</th><th>Prénom</th><th>Sexe</th><th>Âge</th><th>Téléphone</th><th>Quartier</th><th></th></tr></thead>
+      <tbody>
+        <tr th:each="p : ${page.content}">
+          <td th:text="${p.nom}">Nom</td>
+          <td th:text="${p.prenom}">Prénom</td>
+          <td th:text="${p.sexe.libelle}">Sexe</td>
+          <td th:text="${p.age} + ' ans'">30 ans</td>
+          <td th:text="${p.telephone}">699000000</td>
+          <td th:text="${p.quartier}">Quartier</td>
+          <td class="text-end text-nowrap">
+            <a class="btn btn-sm btn-outline-primary" th:href="@{|/participants/${p.id}/modifier|}">Modifier</a>
+            <form class="d-inline" method="post" th:action="@{|/participants/${p.id}/supprimer|}"
+                  onsubmit="return confirm('Supprimer ce participant ?');">
+              <button class="btn btn-sm btn-outline-danger" type="submit">Supprimer</button>
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <nav th:replace="~{fragments/layout :: pager(${page}, ${baseUrl}, ${qs})}"></nav>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

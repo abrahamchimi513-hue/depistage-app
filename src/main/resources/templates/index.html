@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:replace="~{fragments/layout :: head('Tableau de bord')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: header('accueil')}"></nav>
+<main class="container">
+  <div th:replace="~{fragments/layout :: messages}"></div>
+
+  <div class="d-flex justify-content-between align-items-end mb-3">
+    <h1 class="h3 mb-0">Tableau de bord</h1>
+    <span class="text-muted">Aujourd’hui : <span th:text="${#temporals.format(today, 'dd/MM/yyyy')}">18/11/2026</span></span>
+  </div>
+
+  <!-- Chiffres clés -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-lg"><div class="card stat-card h-100"><div class="card-body">
+      <div class="text-muted small">Campagnes en cours</div>
+      <div class="display-6" th:text="${stats.campagnesEnCours}">0</div></div></div></div>
+    <div class="col-6 col-lg"><div class="card stat-card h-100"><div class="card-body">
+      <div class="text-muted small">Participants</div>
+      <div class="display-6" th:text="${stats.participants}">0</div></div></div></div>
+    <div class="col-6 col-lg"><div class="card stat-card h-100"><div class="card-body">
+      <div class="text-muted small">Dépistages</div>
+      <div class="display-6" th:text="${stats.depistages}">0</div></div></div></div>
+    <div class="col-6 col-lg"><div class="card stat-card h-100"><div class="card-body">
+      <div class="text-muted small">Cas positifs</div>
+      <div class="display-6 text-danger" th:text="${stats.positifs}">0</div></div></div></div>
+    <div class="col-12 col-lg"><div class="card stat-card h-100"><div class="card-body">
+      <div class="text-muted small">Taux de positivité</div>
+      <div class="display-6"><span th:text="${#numbers.formatDecimal(stats.tauxPositivite, 1, 1)}">0,0</span> %</div></div></div></div>
+  </div>
+
+  <!-- Répartitions -->
+  <div class="row g-3 mb-4">
+    <div class="col-lg-4">
+      <div class="card h-100"><div class="card-header">Par type d’examen</div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item text-muted" th:if="${#lists.isEmpty(stats.parType)}">Aucune donnée.</li>
+          <li class="list-group-item d-flex justify-content-between" th:each="r : ${stats.parType}">
+            <span th:text="${r.label}">Type</span>
+            <span><strong th:text="${r.total}">0</strong> <small class="text-muted" th:text="'(' + ${r.pourcentage} + ' %)'"></small></span>
+          </li>
+        </ul></div>
+    </div>
+    <div class="col-lg-4">
+      <div class="card h-100"><div class="card-header">Par résultat</div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item d-flex justify-content-between" th:each="r : ${stats.parResultat}">
+            <span th:text="${r.label}">Résultat</span>
+            <span><strong th:text="${r.total}">0</strong> <small class="text-muted" th:text="'(' + ${r.pourcentage} + ' %)'"></small></span>
+          </li>
+        </ul></div>
+    </div>
+    <div class="col-lg-4">
+      <div class="card h-100"><div class="card-header">Par site</div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item text-muted" th:if="${#lists.isEmpty(stats.parSite)}">Aucune donnée.</li>
+          <li class="list-group-item d-flex justify-content-between" th:each="r : ${stats.parSite}">
+            <span th:text="${r.label}">Site</span>
+            <span><strong th:text="${r.total}">0</strong> <small class="text-muted" th:text="'(' + ${r.pourcentage} + ' %)'"></small></span>
+          </li>
+        </ul></div>
+    </div>
+  </div>
+
+  <!-- Avancement des campagnes -->
+  <div class="card mb-4">
+    <div class="card-header">Avancement des campagnes</div>
+    <div class="card-body">
+      <p class="text-muted mb-0" th:if="${#lists.isEmpty(stats.avancements)}">Aucune campagne.</p>
+      <div class="mb-3" th:each="a : ${stats.avancements}">
+        <div class="d-flex justify-content-between">
+          <a th:href="@{|/campagnes/${a.campagneId}|}" th:text="${a.nom}">Campagne</a>
+          <small class="text-muted"><span th:text="${a.realises}">0</span> / <span th:text="${a.objectif}">0</span>
+            · <span th:text="${a.statut}">En cours</span></small>
+        </div>
+        <div class="progress" role="progressbar" th:attr="aria-valuenow=${a.pourcentage}" aria-valuemin="0" aria-valuemax="100">
+          <!-- Le pourcentage est déjà plafonné à 100 côté serveur -->
+          <div class="progress-bar" th:classappend="${a.objectifAtteint} ? 'bg-success'"
+               th:style="|width: ${a.pourcentage}%|" th:text="${a.pourcentage} + ' %'">0 %</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cas à orienter -->
+  <div class="card">
+    <div class="card-header">Cas à orienter (positifs ou à confirmer)</div>
+    <div class="card-body" th:if="${#lists.isEmpty(stats.casAOrienter)}"><p class="text-muted mb-0">Aucun cas à orienter.</p></div>
+    <div class="table-responsive" th:unless="${#lists.isEmpty(stats.casAOrienter)}">
+      <table class="table table-striped mb-0">
+        <thead><tr><th>Date</th><th>Participant</th><th>Examen</th><th>Résultat</th><th>Orienté vers</th><th>Campagne</th></tr></thead>
+        <tbody>
+          <tr th:each="d : ${stats.casAOrienter}">
+            <td th:text="${#temporals.format(d.dateDepistage, 'dd/MM/yyyy')}">01/01/2026</td>
+            <td th:text="${d.participantNom}">Participant</td>
+            <td th:text="${d.typeLibelle}">Type</td>
+            <td><span th:replace="~{fragments/layout :: badgeResultat(${d.resultat})}"></span></td>
+            <td th:text="${d.orientation}">Centre</td>
+            <td><a th:href="@{|/campagnes/${d.campagneId}|}" th:text="${d.campagneNom}">Campagne</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:replace="~{fragments/layout :: head(${titre})}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: header('agents')}"></nav>
+<main class="container" style="max-width:720px">
+  <h1 class="h3 mb-3" th:text="${titre}">Agent</h1>
+  <form method="post" th:action="@{${action}}" th:object="${agentForm}" novalidate>
+    <div class="alert alert-danger" th:if="${#fields.hasGlobalErrors()}"><div th:each="e : ${#fields.globalErrors()}" th:text="${e}"></div></div>
+    <div class="row">
+      <div class="col-md-6 mb-3"><label class="form-label" for="nom">Nom</label>
+        <input id="nom" class="form-control" th:field="*{nom}" th:errorclass="is-invalid">
+        <div class="invalid-feedback" th:errors="*{nom}"></div></div>
+      <div class="col-md-6 mb-3"><label class="form-label" for="prenom">Prénom</label>
+        <input id="prenom" class="form-control" th:field="*{prenom}" th:errorclass="is-invalid">
+        <div class="invalid-feedback" th:errors="*{prenom}"></div></div>
+    </div>
+    <div class="mb-3"><label class="form-label" for="telephone">Téléphone (9 chiffres, commence par 6)</label>
+      <input id="telephone" class="form-control" th:field="*{telephone}" th:errorclass="is-invalid">
+      <div class="invalid-feedback" th:errors="*{telephone}"></div></div>
+    <div class="mb-3"><label class="form-label" for="fonction">Fonction</label>
+      <select id="fonction" class="form-select" th:field="*{fonction}" th:errorclass="is-invalid">
+        <option value="">-- Choisir --</option>
+        <option th:each="f : ${fonctions}" th:value="${f}" th:text="${f.libelle}"></option>
+      </select>
+      <div class="invalid-feedback" th:errors="*{fonction}"></div></div>
+    <div class="form-check mb-3">
+      <input id="actif" type="checkbox" class="form-check-input" th:field="*{actif}">
+      <label class="form-check-label" for="actif">Agent actif</label>
+    </div>
+    <button class="btn btn-primary" type="submit">Enregistrer</button>
+    <a class="btn btn-link" th:href="@{/agents}">Annuler</a>
+  </form>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

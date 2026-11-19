@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:replace="~{fragments/layout :: head('Requête refusée')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: header('')}"></nav>
+<main class="container text-center py-5">
+  <h1 class="display-4">Oups</h1>
+  <p class="lead" th:text="${message}">La requête n’a pas pu être traitée.</p>
+  <a class="btn btn-primary" th:href="@{/}">Retour au tableau de bord</a>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:replace="~{fragments/layout :: head('Sites')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: header('sites')}"></nav>
+<main class="container">
+  <div th:replace="~{fragments/layout :: messages}"></div>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Sites</h1>
+    <a class="btn btn-primary" th:href="@{/sites/nouveau}">Nouveau site</a>
+  </div>
+  <form method="get" th:action="@{/sites}" class="input-group mb-3">
+    <input type="text" name="q" th:value="${q}" class="form-control" placeholder="Rechercher par nom ou quartier">
+    <button class="btn btn-outline-secondary" type="submit">Rechercher</button>
+  </form>
+  <p class="text-muted" th:if="${page.empty}">Aucun site ne correspond.</p>
+  <div class="table-responsive" th:unless="${page.empty}">
+    <table class="table table-striped">
+      <thead><tr><th>Nom</th><th>Quartier</th><th>Adresse</th><th>Capacité / jour</th><th>Campagne</th><th></th></tr></thead>
+      <tbody>
+        <tr th:each="s : ${page.content}">
+          <td th:text="${s.nom}">Nom</td>
+          <td th:text="${s.quartier}">Quartier</td>
+          <td th:text="${s.adresse}">Adresse</td>
+          <td th:text="${s.capaciteJournaliere}">0</td>
+          <td><a th:href="@{|/campagnes/${s.campagneId}|}" th:text="${s.campagneNom}">Campagne</a></td>
+          <td class="text-end text-nowrap">
+            <a class="btn btn-sm btn-outline-primary" th:href="@{|/sites/${s.id}/modifier|}">Modifier</a>
+            <form class="d-inline" method="post" th:action="@{|/sites/${s.id}/supprimer|}"
+                  onsubmit="return confirm('Supprimer ce site ?');">
+              <button class="btn btn-sm btn-outline-danger" type="submit">Supprimer</button>
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <nav th:replace="~{fragments/layout :: pager(${page}, ${baseUrl}, ${qs})}"></nav>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>
